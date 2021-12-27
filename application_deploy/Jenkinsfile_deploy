@@ -1,0 +1,102 @@
+#!/usr/bin/env groovy
+
+
+def getCustomData() {
+    def mycustomfield = [:]
+    mycustomfield['env'] = params.ENV
+   // mycustomfield['build-result'] = ${currentBuild.currentResult}
+    
+    println(currentBuild)
+    def mycustomMeasure = [:]
+    mycustomMeasure['build-stats'] = mycustomfield
+    
+    
+    
+    def testenv = "env=${params.ENV}\nnew_tag=hello"
+     
+    return testenv
+}
+
+
+
+pipeline {
+    agent any
+    environment {
+        DOCKER_PASSWORD = credentials('docker_reg_pass') 
+        APP_VERSION = "${DEPLOY_APP_VERSION}"
+    }
+    stages {
+        
+        stage('Check Parameters') {
+            steps {
+                script {
+                    if (params.DEPLOY_APP_VERSION == null) {
+                        println("ERROR : Please select a APP_VERSION");
+                        currentBuild.result = 'FAILURE' 
+                        return
+                    } 
+
+                     
+                    if (params.DEPLOY_APP == null) {
+                        println("ERROR : Please select a application to deploy");
+                        currentBuild.result = 'FAILURE' 
+                        return
+                    }
+
+                    if (params.Environment == null) {
+                        println("ERROR : Please select a environment");
+                        currentBuild.result = 'FAILURE' 
+                        return
+                    }
+
+                    if (params.Region == null) {
+                        println("ERROR : Please select a Region");
+                        currentBuild.result = 'FAILURE' 
+                        return
+                    }
+                }
+
+            }
+        }
+        stage('Deploy') {
+            steps {
+                sh '''
+                    if [ $DEPLOY_APP = "product_app" ]
+                    then
+                        echo "Deploying product_app ................ "
+                        ./jenkins/deploy/deploy.sh ${Environment} ${Region} ${DEPLOY_APP}
+                    fi
+                    if [ $DEPLOY_APP = "customer_app" ]
+                    then
+                        echo "Deploying customer_app ................ "
+                        ./jenkins/deploy/deploy.sh ${Environment} ${Region} ${DEPLOY_APP}
+                    fi
+                    
+                '''
+            }
+        }
+       
+  
+    }
+//           post {
+//     always {
+//       steps {
+//                 script {
+//                     try {
+    
+//                         if (currentBuild.result == null) {
+//                             currentBuild.result = 'SUCCESS' // sets the ordinal as 0 and boolean to true
+//                         }
+//                     } catch (err) {
+//                         if (currentBuild.result == null) {
+//                             currentBuild.result = 'FAILURE' // sets the ordinal as 4 and boolean to false
+//                         }
+//                         throw err
+//                     } 
+                
+//                 }
+//                 influxDbPublisher(selectedTarget: 'TESTDB',jenkinsEnvParameterField: getCustomData())
+//             }
+//     }
+//   }
+}
