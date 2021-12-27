@@ -1,0 +1,12 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Analylize Build Metrics') {
+            steps {
+                jenkinsDetails = load 'job_metrics/scripts/pull_jenkins_build_details.groovy'
+                jenkinsDetails.fetchJenkinsJobDetails("${JOB_NAME}","$JOB_ID")
+            }
+        }
+    }
+}
