@@ -12,6 +12,8 @@ def fetchJenkinsJobDetails(String jobName,String jobId) {
 }
 
 
+return this
+
 
 
 
