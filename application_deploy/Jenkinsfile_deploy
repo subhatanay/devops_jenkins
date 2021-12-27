@@ -61,6 +61,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 sh '''
+                    cd application_deploy
                     if [ $DEPLOY_APP = "product_app" ]
                     then
                         echo "Deploying product_app ................ "
