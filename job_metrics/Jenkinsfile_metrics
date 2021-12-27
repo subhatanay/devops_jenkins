@@ -6,7 +6,7 @@ pipeline {
             steps {
                 script {
                     jenkinsDetails = load 'job_metrics/scripts/pull_jenkins_build_details.groovy'
-                    jenkinsDetails.fetchJenkinsJobDetails(params.JOB_NAME,params.JOB_ID)
+                    jenkinsDetails.fetchJenkinsJobDetails("http://localhost:8080",params.JOB_NAME,params.JOB_ID)
                 }
                 
             }
