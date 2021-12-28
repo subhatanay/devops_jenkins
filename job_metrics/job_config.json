@@ -1,0 +1,24 @@
+{
+  "jobDetails" : {
+    "customer_app" : {
+        "build_type" : "BUILD",
+        "component_name" : "customer_app",
+        "job_url" : "http://localhost:8080/job/customer_app"
+    },
+    "product_app" : {
+        "build_type" : "BUILD",
+        "component_name" : "product_app",
+        "job_url" : "http://localhost:8080/job/product_app"
+    },
+    "Deploy_Applications_Job": {
+        "build_type" : "DEPLOY",
+        "job_url" : "http://localhost:8080/job/Deploy_Applications_Job/"
+    } 
+  },
+  "influx": {
+      "url" : "http://influxdb:8086",
+      "auth" : "Influxdb",
+      "db": "jenkins_stats",
+      "measureMent": "build_stats"
+  }  
+}

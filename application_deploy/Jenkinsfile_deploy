@@ -2,23 +2,23 @@
 
 def callJenkinsJob(String jobName, String jobId) {
     def responseCrumb = httpRequest acceptType: 'APPLICATION_JSON',
-                                                        httpMode: 'GET',
-                                                        consoleLogResponseBody: true,
-                                                        authentication: 'jenkins-api',
-                                                        contentType: 'APPLICATION_JSON',
-                                                        ignoreSslErrors: true,
-                                                        responseHandle: 'LEAVE_OPEN',
-                                                        url: "http://jenkins:8080/crumbIssuer/api/json"
+                                    httpMode: 'GET',
+                                    consoleLogResponseBody: true,
+                                    authentication: 'jenkins-api',
+                                    contentType: 'APPLICATION_JSON',
+                                    ignoreSslErrors: true,
+                                    responseHandle: 'LEAVE_OPEN',
+                                    url: "http://jenkins:8080/crumbIssuer/api/json"
     def jsonObj = readJSON text: responseCrumb.content
     httpRequest acceptType: 'APPLICATION_JSON',
-                                                        httpMode: 'GET',
-                                                        consoleLogResponseBody: true,
-                                                        authentication: 'jenkins-api',
-                                                        contentType: 'APPLICATION_JSON',
-                                                        ignoreSslErrors: true,
-                                                        customHeaders: [[name: "Jenkins-Crumb","value": jsonObj["crumb"]]],
-                                                        responseHandle: 'LEAVE_OPEN',
-                                                        url: "http://localhost:8080/job/Jenkins_Job_Metrics_Publisher/buildWithParameters?token=TestToken&JOB_NAME=${jobName}&JOB_ID=${jobId}"
+                httpMode: 'GET',
+                consoleLogResponseBody: true,
+                authentication: 'jenkins-api',
+                contentType: 'APPLICATION_JSON',
+                ignoreSslErrors: true,
+                customHeaders: [[name: "Jenkins-Crumb","value": jsonObj["crumb"]]],
+                responseHandle: 'LEAVE_OPEN',
+                url: "http://localhost:8080/job/Jenkins_Job_Metrics_Publisher/buildWithParameters?token=TestToken&JOB_NAME=${jobName}&JOB_ID=${jobId}"
 
             
 }
