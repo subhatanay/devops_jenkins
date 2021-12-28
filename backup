@@ -1,9 +1,27 @@
 #!/usr/bin/env groovy
 
+import groovy.json.JsonSlurperClassic 
+
 // Start Build Analyze functions
-def fetchStaticJobConfiguration() { 
-    def jobConfigObject = readJSON file:'./job_metrics/job_config.json'
-    return jobConfigObject
+def fetchStaticJobConfiguration() {
+    def configString  = """{
+        "customer_app" : {
+            "build_type" : "BUILD",
+            "component_name" : "customer_app",
+            "job_url" : "http://localhost:8080/job/customer_app"
+        },
+        "product_app" : {
+            "build_type" : "BUILD",
+            "component_name" : "product_app",
+            "job_url" : "http://localhost:8080/job/product_app"
+        },
+        "Deploy_Applications_Job": {
+            "build_type" : "DEPLOY",
+            "job_url" : "http://localhost:8080/job/Deploy_Applications_Job"
+        } 
+}"""
+    def config = convertJsonStringToJsonObject(configString)
+    return config
 }
 
 def constructJobDetailsAPIUrl(String url ,String jobId) { 
@@ -12,13 +30,13 @@ def constructJobDetailsAPIUrl(String url ,String jobId) {
 }
 def getRequest(String url) {
     def response = httpRequest acceptType: 'APPLICATION_JSON',
-                                httpMode: 'GET',
-                                consoleLogResponseBody: false,
-                                authentication: 'jenkins-api',
-                                contentType: 'APPLICATION_JSON',
-                                ignoreSslErrors: true,
-                                responseHandle: 'LEAVE_OPEN',
-                                url: url
+                                                        httpMode: 'GET',
+                                                        consoleLogResponseBody: false,
+                                                        authentication: 'jenkins-api',
+                                                        contentType: 'APPLICATION_JSON',
+                                                        ignoreSslErrors: true,
+                                                        responseHandle: 'LEAVE_OPEN',
+                                                        url: url
    
     if (response.status == 200) {
          return convertJsonStringToJsonObject(response.content) 
@@ -68,16 +86,20 @@ def collectMetricsFromJobdetails(job_name,jsonBuildDetails,jobConfig) {
         } 
     }
     
-    return details    
+    return details
+    
 }
-def convertJsonStringToJsonObject(jsonString) { 
-    jsonData = readJSON text:jsonString 
+@NonCPS
+def convertJsonStringToJsonObject(jsonString) {
+    def jsonSlurper = new JsonSlurperClassic()    
+    jsonData = jsonSlurper.parseText(jsonString) 
     return jsonData
 }
 
-def convertMapToJsonString(jsonObject) { 
-    jsonString = writeJSON returnText: true , json: jsonObject
-    return jsonString
+def convertMapToJsonString(jsonObject) {
+    def json = new groovy.json.JsonBuilder()
+    json rootKey: jsonObject
+    return groovy.json.JsonOutput.prettyPrint(json.toString())
 } 
 
 // End Build Analyze functions
@@ -124,7 +146,11 @@ def transformMapToInfluxQuery(measurementName,time,tags,fields) {
     StringBuilder query = new StringBuilder(measurementName + ",");
     
     tags.each { key,val ->  query.append(key).append("=").append(val).append(",") }
-    
+        
+     
+    for (String tagKey : tags.keySet()) {
+       
+    }
     query.deleteCharAt(query.size()-1);
     query.append(" ");
     
@@ -135,17 +161,17 @@ def transformMapToInfluxQuery(measurementName,time,tags,fields) {
     return query.toString();
 }
 
-def writeToInfluxDB(influcUrl, db ,auth, query) {
+def writeToInfluxDB(influcUrl, db , query) {
     influcUrl = influcUrl + "/write?db=" + db;
     println("Calling InfluxDB ${influcUrl} to push metrics ")
     def response = httpRequest acceptType: 'APPLICATION_JSON',
-                                httpMode: 'POST',
-                                consoleLogResponseBody: false,
-                                requestBody: query,
-                                authentication: auth, 
-                                ignoreSslErrors: true,
-                                responseHandle: 'LEAVE_OPEN',
-                                url: influcUrl
+                                                        httpMode: 'POST',
+                                                        consoleLogResponseBody: false,
+                                                        requestBody: query,
+                                                        authentication: 'Influxdb', 
+                                                        ignoreSslErrors: true,
+                                                        responseHandle: 'LEAVE_OPEN',
+                                                        url: influcUrl
     if (response.status >=200 && response.status <=399) {
         println("Successfully pushed metrics to influx db")
     } else {
@@ -170,14 +196,14 @@ pipeline {
                 script { 
                     println("Analyzing Jenkins Build for Job Name  :: " + params.JOB_NAME + " and Job ID :: " + params.JOB_ID)
                     def jobConfig = fetchStaticJobConfiguration()
-                    def jenkinsUrl = constructJobDetailsAPIUrl(jobConfig["jobDetails"][params.JOB_NAME]["job_url"],params.JOB_ID)
+                    def jenkinsUrl = constructJobDetailsAPIUrl(jobConfig[params.JOB_NAME]["job_url"],params.JOB_ID)
                     println("Calling  " + jenkinsUrl)
                     def parsedJenkinsBuildDetails = getRequest(jenkinsUrl)
                     if (parsedJenkinsBuildDetails["errorCode"] != null) {
                         throw new Exception("ERROR : Wrong jobname or jobid" )
                     }
                     
-                    def buildMetrics = collectMetricsFromJobdetails(params.JOB_NAME,parsedJenkinsBuildDetails,jobConfig["jobDetails"][params.JOB_NAME]) 
+                    def buildMetrics = collectMetricsFromJobdetails(params.JOB_NAME,parsedJenkinsBuildDetails,jobConfig[params.JOB_NAME]) 
                     def buildMetricsInJSON = convertMapToJsonString(buildMetrics)
                     println("Job Metrics :: " )
                     println(buildMetricsInJSON)
@@ -191,12 +217,11 @@ pipeline {
                script {
                    println("Store build to influx db") 
                    try {
-                        def jobConfig = fetchStaticJobConfiguration()
                         def buildMetrics = convertJsonStringToJsonObject(env.buildMetrics)
-                        def influxMeasurement = convertBuildDetailsToInfluxMeasurements(buildMetrics) 
+                        def influxMeasurement = convertBuildDetailsToInfluxMeasurements(buildMetrics["rootKey"]) 
                         
-                        def influxQuery = transformMapToInfluxQuery("build_stats",buildMetrics["timestamp"],influxMeasurement[1],influxMeasurement[0]);
-                        writeToInfluxDB(jobConfig["influx"]["url"],jobConfig["influx"]["db"],jobConfig["influx"]["auth"],influxQuery)
+                        def influxQuery = transformMapToInfluxQuery("build_stats",buildMetrics["rootKey"]["timestamp"],influxMeasurement[1],influxMeasurement[0]);
+                        writeToInfluxDB("http://influxdb:8086","jenkins_stats",influxQuery)
                    } catch(Exception e) {
                         println("Error occured while push metrics to influx db :: " + e.getMessage()) 
                         throw e
