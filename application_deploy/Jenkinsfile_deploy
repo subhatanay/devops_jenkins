@@ -1,6 +1,27 @@
 #!/usr/bin/env groovy
 
+def callJenkinsJob(String jobName, String jobId) {
+    def responseCrumb = httpRequest acceptType: 'APPLICATION_JSON',
+                                                        httpMode: 'GET',
+                                                        consoleLogResponseBody: true,
+                                                        authentication: 'jenkins-api',
+                                                        contentType: 'APPLICATION_JSON',
+                                                        ignoreSslErrors: true,
+                                                        responseHandle: 'LEAVE_OPEN',
+                                                        url: "http://jenkins:8080/crumbIssuer/api/json"
+    def jsonObj = readJSON text: responseCrumb.content
+    httpRequest acceptType: 'APPLICATION_JSON',
+                                                        httpMode: 'GET',
+                                                        consoleLogResponseBody: true,
+                                                        authentication: 'jenkins-api',
+                                                        contentType: 'APPLICATION_JSON',
+                                                        ignoreSslErrors: true,
+                                                        customHeaders: [[name: "Jenkins-Crumb","value": jsonObj["crumb"]]],
+                                                        responseHandle: 'LEAVE_OPEN',
+                                                        url: "http://localhost:8080/job/Jenkins_Job_Metrics_Publisher/buildWithParameters?token=TestToken&JOB_NAME=${jobName}&JOB_ID=${jobId}"
 
+            
+}
 def getCustomData() {
     def mycustomfield = [:]
     mycustomfield['env'] = params.ENV
@@ -79,25 +100,11 @@ pipeline {
        
   
     }
-//           post {
-//     always {
-//       steps {
-//                 script {
-//                     try {
-    
-//                         if (currentBuild.result == null) {
-//                             currentBuild.result = 'SUCCESS' // sets the ordinal as 0 and boolean to true
-//                         }
-//                     } catch (err) {
-//                         if (currentBuild.result == null) {
-//                             currentBuild.result = 'FAILURE' // sets the ordinal as 4 and boolean to false
-//                         }
-//                         throw err
-//                     } 
-                
-//                 }
-//                 influxDbPublisher(selectedTarget: 'TESTDB',jenkinsEnvParameterField: getCustomData())
-//             }
-//     }
-//   }
+    post {
+        always {
+            script {
+                callJenkinsJob("Deploy_Applications_Job",BUILD_NUMBER);
+            }
+        }
+    }
 }
