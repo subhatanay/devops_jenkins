@@ -1,7 +1,5 @@
 #!/usr/bin/env groovy
 
-import groovy.json.JsonSlurperClassic 
-
 // Start Build Analyze functions
 def fetchStaticJobConfiguration() { 
     def jobConfigObject = readJSON file:'./job_metrics/job_config.json'
