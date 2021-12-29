@@ -135,7 +135,7 @@ def transformMapToInfluxQuery(measurementName,time,tags,fields) {
     fields.each { key,val ->   query.append(key).append("=").append(val).append(",") }
     
     query.deleteCharAt(query.size()-1);
-    query.append(" ").append(time);
+   // query.append(" ").append(time);
     return query.toString();
 }
 
