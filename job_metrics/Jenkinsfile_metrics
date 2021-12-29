@@ -200,6 +200,7 @@ pipeline {
                         def influxMeasurement = convertBuildDetailsToInfluxMeasurements(buildMetrics) 
                         
                         def influxQuery = transformMapToInfluxQuery("build_stats",buildMetrics["timestamp"],influxMeasurement[1],influxMeasurement[0]);
+                        println("query : ${influxQuery}" )
                         writeToInfluxDB(jobConfig["influx"]["url"],jobConfig["influx"]["db"],jobConfig["influx"]["auth"],influxQuery)
                    } catch(Exception e) {
                         println("Error occured while push metrics to influx db :: " + e.getMessage()) 
