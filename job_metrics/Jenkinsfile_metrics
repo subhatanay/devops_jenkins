@@ -108,10 +108,14 @@ def convertBuildDetailsToInfluxMeasurements(buildMetrics) {
     tags["project_name"] = buildMetrics["job_name"]
     tags["project_path"] = buildMetrics["job_name"]
     
+    if ( buildMetrics["component"] !=null) {
+        tags["component_f"] = buildMetrics["component"]
+    }
     fields["build_number"] = Integer.valueOf(buildMetrics["build_number"])
     fields["build_time"] = buildMetrics["build_time"]
     fields["build_measured_time"] = buildMetrics["build_measured_time"] 
     fields["build_exec_time"] = buildMetrics["build_time"] 
+    
     
     
     measurementFields["build_stats"] = fields
