@@ -92,7 +92,9 @@ def convertBuildDetailsToInfluxMeasurements(buildMetrics) {
     //tags["time"] = String.valueOf(buildMetrics["timestamp"])
     tags["job_name"] = buildMetrics["job_name"]
     tags["build_type"] = buildMetrics["build_type"]
-    tags["environment"] = buildMetrics["environment"]
+    if (buildMetrics["environment"] !=null) {
+        tags["environment"] = buildMetrics["environment"]
+    }
     
     if ( buildMetrics["component"] !=null) {
         tags["component"] = buildMetrics["component"]
