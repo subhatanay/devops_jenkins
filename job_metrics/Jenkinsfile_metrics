@@ -106,7 +106,6 @@ def convertBuildDetailsToInfluxMeasurements(buildMetrics) {
     tags["build_started_by"] = buildMetrics["build_started_by"]
     tags["build_causer"] = buildMetrics["build_started_by"]
     tags["project_name"] = buildMetrics["job_name"]
-    tags["project_path"] = buildMetrics["job_name"]
     
     if ( buildMetrics["component"] !=null) {
         fields["component_f"] = "\"" + buildMetrics["component"] + "\""
@@ -115,12 +114,10 @@ def convertBuildDetailsToInfluxMeasurements(buildMetrics) {
     fields["build_number"] = Integer.valueOf(buildMetrics["build_number"])
     fields["build_time"] = buildMetrics["build_time"]
     fields["build_measured_time"] = buildMetrics["build_measured_time"] 
-    fields["build_exec_time"] = buildMetrics["build_time"] 
     
-    
-    
-    measurementFields["build_stats"] = fields
-    measurementTags["build_stats"] = tags
+    fields["is_success"] = fields["build_result_f"] == "SUCCESS"
+    fields["is_failure"] = fields["build_result_f"] == "FAILURE"
+    fields["is_abort"] = buildMetrics["build_result_f"]  == "ABORTED"
     
     return [fields , tags]
 }
