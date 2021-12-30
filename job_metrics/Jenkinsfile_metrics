@@ -115,9 +115,9 @@ def convertBuildDetailsToInfluxMeasurements(buildMetrics) {
     fields["build_time"] = buildMetrics["build_time"]
     fields["build_measured_time"] = buildMetrics["build_measured_time"] 
     
-    fields["is_success"] = fields["build_result_f"].equals("SUCCESS")
-    fields["is_failure"] = fields["build_result_f"].equals("FAILURE")
-    fields["is_abort"] = buildMetrics["build_result_f"].equals("ABORTED")
+    fields["is_success"] = buildMetrics["build_result"].equals("SUCCESS")
+    fields["is_failure"] = buildMetrics["build_result"].equals("FAILURE")
+    fields["is_abort"] = buildMetrics["build_result"].equals("ABORTED")
     
     return [fields , tags]
 }
