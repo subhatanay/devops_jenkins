@@ -1,0 +1,1337 @@
+{
+    "annotations": {
+      "list": [
+        {
+          "builtIn": 1,
+          "datasource": "-- Grafana --",
+          "enable": true,
+          "hide": true,
+          "iconColor": "rgba(0, 211, 255, 1)",
+          "name": "Annotations & Alerts",
+          "target": {
+            "limit": 100,
+            "matchAny": false,
+            "tags": [],
+            "type": "dashboard"
+          },
+          "type": "dashboard"
+        }
+      ]
+    },
+    "editable": true,
+    "fiscalYearStartMonth": 0,
+    "graphTooltip": 0,
+    "id": 3,
+    "links": [
+      {
+        "asDropdown": false,
+        "icon": "external link",
+        "includeVars": false,
+        "keepTime": false,
+        "tags": [],
+        "targetBlank": false,
+        "title": "New link",
+        "tooltip": "",
+        "type": "dashboards",
+        "url": ""
+      }
+    ],
+    "liveNow": false,
+    "panels": [
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 0
+        },
+        "id": 10,
+        "panels": [],
+        "title": "Build Summary",
+        "type": "row"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "thresholds"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 4,
+          "x": 0,
+          "y": 1
+        },
+        "id": 4,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "build_type"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT count(\"build_number\") FROM \"build_stats\" WHERE (\"build_type\" = 'BUILD' AND \"build_result\" = 'SUCCESS') AND $timeFilter GROUP BY \"build_type\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_number"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "count"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              },
+              {
+                "condition": "AND",
+                "key": "build_result",
+                "operator": "=",
+                "value": "SUCCESS"
+              }
+            ]
+          }
+        ],
+        "title": "Total Successful Builds",
+        "type": "stat"
+      },
+      {
+        "description": "",
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-RdYlGr"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 4,
+          "x": 4,
+          "y": 1
+        },
+        "id": 6,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "build_type"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT count(\"build_number\") FROM \"build_stats\" WHERE (\"build_type\" = 'BUILD' AND \"build_result\" = 'FAILURE') AND $timeFilter GROUP BY \"build_type\"",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_number"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "count"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              },
+              {
+                "condition": "AND",
+                "key": "build_result",
+                "operator": "=",
+                "value": "FAILURE"
+              }
+            ]
+          }
+        ],
+        "title": "Total Failed Builds",
+        "type": "stat"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-BlYlRd"
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 3,
+          "w": 4,
+          "x": 8,
+          "y": 1
+        },
+        "id": 8,
+        "options": {
+          "colorMode": "value",
+          "graphMode": "area",
+          "justifyMode": "auto",
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "textMode": "auto"
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "build_type"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_number"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "count"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              },
+              {
+                "condition": "AND",
+                "key": "build_result",
+                "operator": "=",
+                "value": "ABORTED"
+              }
+            ]
+          }
+        ],
+        "title": "Total Aborted Builds",
+        "type": "stat"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "align": "center",
+              "displayMode": "color-text",
+              "filterable": true
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 9,
+          "w": 12,
+          "x": 12,
+          "y": 1
+        },
+        "id": 25,
+        "options": {
+          "footer": {
+            "fields": "",
+            "reducer": [
+              "sum"
+            ],
+            "show": false
+          },
+          "showHeader": true
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "component_f"
+                  ],
+                  "type": "field"
+                }
+              ],
+              [
+                {
+                  "params": [
+                    "is_success"
+                  ],
+                  "type": "field"
+                }
+              ],
+              [
+                {
+                  "params": [
+                    "is_failure"
+                  ],
+                  "type": "field"
+                }
+              ],
+              [
+                {
+                  "params": [
+                    "is_abort"
+                  ],
+                  "type": "field"
+                }
+              ],
+              [
+                {
+                  "params": [
+                    "build_time"
+                  ],
+                  "type": "field"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              }
+            ]
+          }
+        ],
+        "title": "Application Build Summary",
+        "transformations": [
+          {
+            "id": "seriesToColumns",
+            "options": {}
+          },
+          {
+            "id": "convertFieldType",
+            "options": {
+              "conversions": [
+                {
+                  "destinationType": "number",
+                  "targetField": "build_stats.is_success"
+                },
+                {
+                  "destinationType": "number",
+                  "targetField": "build_stats.is_failure"
+                },
+                {
+                  "destinationType": "number",
+                  "targetField": "build_stats.is_abort"
+                }
+              ],
+              "fields": {}
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {
+                "Time": true
+              },
+              "indexByName": {},
+              "renameByName": {
+                "build_stats.build_time": "Build Time",
+                "build_stats.component_f": "Component",
+                "build_stats.is_abort": "Aborted",
+                "build_stats.is_failure": "Failure",
+                "build_stats.is_success": "Success"
+              }
+            }
+          },
+          {
+            "id": "groupBy",
+            "options": {
+              "fields": {
+                "Aborted": {
+                  "aggregations": [
+                    "sum"
+                  ],
+                  "operation": "aggregate"
+                },
+                "Build Time": {
+                  "aggregations": [
+                    "mean"
+                  ],
+                  "operation": "aggregate"
+                },
+                "Component": {
+                  "aggregations": [],
+                  "operation": "groupby"
+                },
+                "Failure": {
+                  "aggregations": [
+                    "sum"
+                  ],
+                  "operation": "aggregate"
+                },
+                "Success": {
+                  "aggregations": [
+                    "sum"
+                  ],
+                  "operation": "aggregate"
+                }
+              }
+            }
+          },
+          {
+            "id": "calculateField",
+            "options": {
+              "mode": "reduceRow",
+              "reduce": {
+                "include": [
+                  "Success (sum)",
+                  "Failure (sum)",
+                  "Aborted (sum)"
+                ],
+                "reducer": "sum"
+              }
+            }
+          },
+          {
+            "id": "organize",
+            "options": {
+              "excludeByName": {},
+              "indexByName": {
+                "Aborted (sum)": 4,
+                "Build Time (mean)": 5,
+                "Component": 0,
+                "Failure (sum)": 3,
+                "Success (sum)": 2,
+                "Total": 1
+              },
+              "renameByName": {
+                "Aborted (sum)": "Aborted",
+                "Build Time (mean)": "Avg Build Time",
+                "Failure (sum)": "Failure",
+                "Success (sum)": "Success",
+                "Total": "Total Builds"
+              }
+            }
+          }
+        ],
+        "type": "table"
+      },
+      {
+        "aliasColors": {},
+        "bars": true,
+        "dashLength": 10,
+        "dashes": false,
+        "fieldConfig": {
+          "defaults": {
+            "unit": "ms"
+          },
+          "overrides": []
+        },
+        "fill": 6,
+        "fillGradient": 5,
+        "gridPos": {
+          "h": 6,
+          "w": 12,
+          "x": 0,
+          "y": 4
+        },
+        "hiddenSeries": false,
+        "id": 2,
+        "legend": {
+          "alignAsTable": true,
+          "avg": false,
+          "current": false,
+          "max": true,
+          "min": true,
+          "rightSide": true,
+          "show": true,
+          "total": true,
+          "values": true
+        },
+        "lines": true,
+        "linewidth": 4,
+        "nullPointMode": "null",
+        "options": {
+          "alertThreshold": true
+        },
+        "percentage": false,
+        "pluginVersion": "8.3.3",
+        "pointradius": 2,
+        "points": false,
+        "renderer": "flot",
+        "seriesOverrides": [],
+        "spaceLength": 10,
+        "stack": false,
+        "steppedLine": true,
+        "targets": [
+          {
+            "alias": "$tag_build_result",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "$__interval"
+                ],
+                "type": "time"
+              },
+              {
+                "params": [
+                  "build_result"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "null"
+                ],
+                "type": "fill"
+              }
+            ],
+            "hide": false,
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT mean(\"build_time\") FROM \"build_stats\" WHERE (\"build_type\" = 'BUILD') AND $timeFilter GROUP BY time($__interval), \"build_result\" fill(null)",
+            "rawQuery": true,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_time"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "mean"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              }
+            ]
+          }
+        ],
+        "thresholds": [
+          {
+            "$$hashKey": "object:436",
+            "colorMode": "critical",
+            "fill": false,
+            "line": true,
+            "op": "gt",
+            "value": 60012,
+            "yaxis": "left"
+          }
+        ],
+        "timeRegions": [],
+        "title": "Build Trends",
+        "tooltip": {
+          "shared": true,
+          "sort": 0,
+          "value_type": "individual"
+        },
+        "type": "graph",
+        "xaxis": {
+          "mode": "time",
+          "show": true,
+          "values": []
+        },
+        "yaxes": [
+          {
+            "$$hashKey": "object:303",
+            "format": "ms",
+            "logBase": 1,
+            "show": true
+          },
+          {
+            "$$hashKey": "object:304",
+            "format": "short",
+            "logBase": 1,
+            "show": true
+          }
+        ],
+        "yaxis": {
+          "align": false
+        }
+      },
+      {
+        "collapsed": false,
+        "gridPos": {
+          "h": 1,
+          "w": 24,
+          "x": 0,
+          "y": 10
+        },
+        "id": 16,
+        "panels": [],
+        "title": "Application Builds",
+        "type": "row"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "continuous-RdYlGr"
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 85
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 9,
+          "x": 0,
+          "y": 11
+        },
+        "id": 12,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "alias": "$tag_build_result",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "component"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "build_result"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "DESC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_number"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "count"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "customer_app"
+              },
+              {
+                "condition": "AND",
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              }
+            ]
+          }
+        ],
+        "title": "Build customer_app",
+        "type": "gauge"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "mappings": [],
+            "noValue": "0",
+            "thresholds": {
+              "mode": "percentage",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "orange",
+                  "value": 70
+                },
+                {
+                  "color": "red",
+                  "value": 85
+                }
+              ]
+            }
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 8,
+          "x": 9,
+          "y": 11
+        },
+        "id": 14,
+        "options": {
+          "orientation": "auto",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "showThresholdLabels": false,
+          "showThresholdMarkers": true
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "alias": "$tag_build_result",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "component"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "build_result"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "DESC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_number"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "count"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "component",
+                "operator": "=",
+                "value": "product_app"
+              },
+              {
+                "condition": "AND",
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              }
+            ]
+          }
+        ],
+        "title": "Build product_app",
+        "type": "gauge"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              }
+            },
+            "mappings": []
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 10,
+          "w": 7,
+          "x": 17,
+          "y": 11
+        },
+        "id": 23,
+        "options": {
+          "displayLabels": [],
+          "legend": {
+            "displayMode": "table",
+            "placement": "right",
+            "values": [
+              "value"
+            ]
+          },
+          "pieType": "pie",
+          "reduceOptions": {
+            "calcs": [
+              "lastNotNull"
+            ],
+            "fields": "",
+            "values": false
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "targets": [
+          {
+            "alias": "$tag_component - $tag_build_version ",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "component"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "build_version"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "0"
+                ],
+                "type": "fill"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_number"
+                  ],
+                  "type": "field"
+                },
+                {
+                  "params": [],
+                  "type": "count"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              }
+            ]
+          }
+        ],
+        "title": "Build Version Stats",
+        "type": "piechart"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "bars",
+              "fillOpacity": 42,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 4,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 9,
+          "x": 0,
+          "y": 16
+        },
+        "id": 26,
+        "options": {
+          "legend": {
+            "calcs": [
+              "mean",
+              "max",
+              "min"
+            ],
+            "displayMode": "table",
+            "placement": "right"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "alias": "$tag_build_result",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "build_type"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "component"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "build_result"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT \"build_time\" FROM \"build_stats\" WHERE (\"build_type\" = 'BUILD' AND \"component\" = 'customer_app') AND $timeFilter GROUP BY \"build_type\", \"component\"",
+            "rawQuery": false,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_time"
+                  ],
+                  "type": "field"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "customer_app"
+              }
+            ]
+          }
+        ],
+        "title": "customer_app",
+        "type": "timeseries"
+      },
+      {
+        "fieldConfig": {
+          "defaults": {
+            "color": {
+              "mode": "palette-classic"
+            },
+            "custom": {
+              "axisLabel": "",
+              "axisPlacement": "auto",
+              "barAlignment": 0,
+              "drawStyle": "bars",
+              "fillOpacity": 42,
+              "gradientMode": "opacity",
+              "hideFrom": {
+                "legend": false,
+                "tooltip": false,
+                "viz": false
+              },
+              "lineInterpolation": "linear",
+              "lineWidth": 4,
+              "pointSize": 5,
+              "scaleDistribution": {
+                "type": "linear"
+              },
+              "showPoints": "never",
+              "spanNulls": true,
+              "stacking": {
+                "group": "A",
+                "mode": "normal"
+              },
+              "thresholdsStyle": {
+                "mode": "off"
+              }
+            },
+            "mappings": [],
+            "thresholds": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "green",
+                  "value": null
+                },
+                {
+                  "color": "red",
+                  "value": 80
+                }
+              ]
+            },
+            "unit": "ms"
+          },
+          "overrides": []
+        },
+        "gridPos": {
+          "h": 5,
+          "w": 8,
+          "x": 9,
+          "y": 16
+        },
+        "id": 19,
+        "options": {
+          "legend": {
+            "calcs": [
+              "mean",
+              "max",
+              "min"
+            ],
+            "displayMode": "table",
+            "placement": "right"
+          },
+          "tooltip": {
+            "mode": "single"
+          }
+        },
+        "pluginVersion": "8.3.3",
+        "targets": [
+          {
+            "alias": "$tag_build_result",
+            "datasource": {
+              "type": "influxdb",
+              "uid": "go2evn0nk"
+            },
+            "groupBy": [
+              {
+                "params": [
+                  "build_type"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "component"
+                ],
+                "type": "tag"
+              },
+              {
+                "params": [
+                  "build_result"
+                ],
+                "type": "tag"
+              }
+            ],
+            "measurement": "build_stats",
+            "orderByTime": "ASC",
+            "policy": "default",
+            "query": "SELECT \"build_time\" FROM \"build_stats\" WHERE (\"build_type\" = 'BUILD' AND \"component\" = 'customer_app') AND $timeFilter GROUP BY \"build_type\", \"component\"",
+            "rawQuery": false,
+            "refId": "A",
+            "resultFormat": "time_series",
+            "select": [
+              [
+                {
+                  "params": [
+                    "build_time"
+                  ],
+                  "type": "field"
+                }
+              ]
+            ],
+            "tags": [
+              {
+                "key": "build_type",
+                "operator": "=",
+                "value": "BUILD"
+              },
+              {
+                "condition": "AND",
+                "key": "component",
+                "operator": "=",
+                "value": "product_app"
+              }
+            ]
+          }
+        ],
+        "title": "product_app",
+        "type": "timeseries"
+      }
+    ],
+    "refresh": "10s",
+    "schemaVersion": 34,
+    "style": "dark",
+    "tags": [],
+    "templating": {
+      "list": []
+    },
+    "time": {
+      "from": "now-6h",
+      "to": "now"
+    },
+    "timepicker": {},
+    "timezone": "",
+    "title": "Jenkins Application Build Jobs",
+    "uid": "7OOkUn0nz",
+    "version": 23,
+    "weekStart": ""
+  }
